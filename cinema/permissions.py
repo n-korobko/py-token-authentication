@@ -8,6 +8,12 @@ class IsAdminOrIfAuthenticatedReadOnly(BasePermission):
     """
 
     def has_permission(self, request, view):
-        return bool(
-            request.method in SAFE_METHODS and request.user and request.user.is_authenticated
-        ) or (request.user and request.user.is_staff)
+        is_readonly = (
+                request.method in SAFE_METHODS
+                and request.user
+                and request.user.is_authenticated
+        )
+
+        is_admin = request.user and request.user.is_staff
+
+        return bool(is_readonly or is_admin)
